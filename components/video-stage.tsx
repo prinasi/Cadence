@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import type { Lesson, PlayerSettings, Sentence, WordToken } from "@/lib/types";
 import { activeWordIndex, formatTime, sentenceAtTime } from "@/lib/text";
+import { withBasePath } from "@/lib/paths";
 
 type VideoStageProps = {
   videoRef: RefObject<HTMLVideoElement | null>;
@@ -146,8 +147,8 @@ export function VideoStage({
       <video
         ref={videoRef}
         className="lesson-video"
-        src={lesson.videoSrc}
-        poster={lesson.poster}
+        src={withBasePath(lesson.videoSrc)}
+        poster={withBasePath(lesson.poster)}
         preload="metadata"
         playsInline
         onPlay={onPlay}
