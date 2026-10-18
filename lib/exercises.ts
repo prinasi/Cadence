@@ -14,13 +14,15 @@ export function wordExercise(sentence: Sentence, token: WordToken): Exercise {
     mode: "word",
     answer,
     sentence,
-    start: Math.max(0, token.start - 0.18),
-    end: Math.min(sentence.end + 0.5, token.end + 0.22),
+    start: Math.max(0, token.start - 0.22),
+    end: Math.min(sentence.end + 0.5, token.end + 0.28),
     wordStart: wordIndex,
     wordEnd: wordIndex,
+    maskStart: sentence.start,
+    maskEnd: sentence.end,
     contextLine: maskSentence(sentence, wordIndex, wordIndex),
     translation: sentence.translation,
-    hint: `Starts with “${answer.charAt(0)}” · ${clean.length} letters`,
+    hint: `Starts with “${clean.charAt(0).toUpperCase()}” · ${clean.length} letters`,
     savedText: answer,
   };
 }
@@ -114,17 +116,42 @@ export function buildSession(
     return shuffled(phrases, seed + 11).slice(0, count);
   }
 
-  const exercises: Exercise[] = [];
   const seen = new Set<string>();
+
+  // 1. Prioritize saved words from this lesson, weakest accuracy first
+  const savedWords = savedItems
+    .filter((item) => item.type === "word" && item.context.lessonId === lesson.id)
+    .sort((a, b) => {
+      const rateA = a.practice.attempts ? a.practice.correct / a.practice.attempts : 0;
+      const rateB = b.practice.attempts ? b.practice.correct / b.practice.attempts : 0;
+      return rateA - rateB;
+    });
+
+  const prioritized: Exercise[] = [];
+  for (const item of savedWords) {
+    const sentence = lesson.sentences.find((s) => s.id === item.context.sentenceId);
+    if (!sentence) continue;
+    const token = sentence.words.find((w) => normalizeWord(w.text) === item.normalized);
+    if (!token) continue;
+    const key = normalizeWord(token.text);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    prioritized.push(wordExercise(sentence, token));
+    if (prioritized.length >= count) return prioritized;
+  }
+
+  // 2. Fill remaining with content words
+  const remaining: Exercise[] = [];
   for (const sentence of lesson.sentences) {
     for (const token of targetWordsForSentence(sentence)) {
       const key = normalizeWord(token.text);
       if (seen.has(key)) continue;
       seen.add(key);
-      exercises.push(wordExercise(sentence, token));
+      remaining.push(wordExercise(sentence, token));
     }
   }
-  return shuffled(exercises, seed + 7).slice(0, count);
+  const needed = count - prioritized.length;
+  return [...prioritized, ...shuffled(remaining, seed + 7).slice(0, needed)];
 }
 
 export function availableModes(lesson: Lesson, savedItems: LearningItem[]): Record<ExerciseMode, number> {

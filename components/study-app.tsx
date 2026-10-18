@@ -41,6 +41,7 @@ import { getImportedLesson, saveImportedLesson, clearImportedLesson } from "@/li
 import {
   downloadTextFile,
   findSaved,
+  findSavedInSentence,
   getTodayStats,
   itemsToCsv,
   makeLearningItem,
@@ -126,12 +127,14 @@ export function StudyApp() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const objectUrlRef = useRef<string | null>(null);
   const toastTimer = useRef<number | null>(null);
+  const loopTimer = useRef<number | null>(null);
 
   const [lesson, setLesson] = useState<Lesson>(demoLesson);
   const [focus, setFocus] = useState<FocusSelection | null>(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(demoLesson.duration);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [clipPlaying, setClipPlaying] = useState(false);
   const [playRange, setPlayRange] = useState<{
     start: number;
     end: number;
@@ -169,6 +172,7 @@ export function StudyApp() {
   useEffect(() => {
     return () => {
       if (toastTimer.current) window.clearTimeout(toastTimer.current);
+      if (loopTimer.current) window.clearTimeout(loopTimer.current);
     };
   }, []);
 
@@ -219,18 +223,29 @@ export function StudyApp() {
         }
         if (playRange && !video.paused && video.currentTime >= playRange.end) {
           if (playRange.loop) {
-            video.currentTime = playRange.start;
-            void video.play().catch(() => undefined);
+            video.pause();
+            if (loopTimer.current) window.clearTimeout(loopTimer.current);
+            loopTimer.current = window.setTimeout(() => {
+              const currentVideo = videoRef.current;
+              if (currentVideo && playRange?.loop) {
+                currentVideo.currentTime = playRange.start;
+                void currentVideo.play().catch(() => undefined);
+              }
+            }, 650);
           } else {
             video.pause();
             setPlayRange(null);
+            setClipPlaying(false);
           }
         }
       }
       frame = window.requestAnimationFrame(tick);
     };
     frame = window.requestAnimationFrame(tick);
-    return () => window.cancelAnimationFrame(frame);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      if (loopTimer.current) window.clearTimeout(loopTimer.current);
+    };
   }, [playRange]);
 
   const today = useMemo(() => getTodayStats(attempts), [attempts]);
@@ -273,42 +288,71 @@ export function StudyApp() {
     (start: number, end: number, rate = 1, kind: "sentence" | "practice" | "word" = "practice", loop = false) => {
       const video = videoRef.current;
       if (!video) return;
+      if (loopTimer.current) {
+        window.clearTimeout(loopTimer.current);
+        loopTimer.current = null;
+      }
       const safeStart = Math.max(0, start);
       const safeEnd = Math.max(safeStart + 0.12, Math.min(end, duration || lesson.duration));
       video.currentTime = safeStart;
       video.playbackRate = rate;
       setPlayRange({ start: safeStart, end: safeEnd, loop, kind });
       setCurrentTime(safeStart);
-      void video.play().catch(() => notify("Playback was blocked. Press play once to allow audio."));
+      setClipPlaying(true);
+      void video.play().catch(() => {
+        setClipPlaying(false);
+        notify("Playback was blocked. Press play once to allow audio.");
+      });
     },
     [duration, lesson.duration, notify],
   );
 
   const stopClip = useCallback(() => {
+    if (loopTimer.current) {
+      window.clearTimeout(loopTimer.current);
+      loopTimer.current = null;
+    }
     const video = videoRef.current;
     if (video && !video.paused) video.pause();
     setPlayRange(null);
+    setClipPlaying(false);
   }, []);
+
+  const pauseVideo = useCallback(() => {
+    if (loopTimer.current) {
+      window.clearTimeout(loopTimer.current);
+      loopTimer.current = null;
+    }
+    const video = videoRef.current;
+    if (video && !video.paused) video.pause();
+    stopClip();
+  }, [stopClip]);
 
   const toggleLoop = useCallback(() => {
     if (!currentSentence) return;
+    if (loopTimer.current) {
+      window.clearTimeout(loopTimer.current);
+      loopTimer.current = null;
+    }
     if (playRange?.loop) {
       setPlayRange(null);
       return;
     }
     const video = videoRef.current;
     if (!video) return;
-    if (video.currentTime < currentSentence.start || video.currentTime > currentSentence.end) {
-      video.currentTime = currentSentence.start;
+    const safeStart = Math.max(0, currentSentence.start - 0.08);
+    const safeEnd = Math.min(duration || lesson.duration, currentSentence.end + 0.2);
+    if (video.currentTime < safeStart || video.currentTime > safeEnd) {
+      video.currentTime = safeStart;
     }
     setPlayRange({
-      start: currentSentence.start,
-      end: currentSentence.end,
+      start: safeStart,
+      end: safeEnd,
       loop: true,
       kind: "sentence",
     });
     void video.play().catch(() => undefined);
-  }, [currentSentence, playRange?.loop]);
+  }, [currentSentence, playRange?.loop, duration, lesson.duration]);
 
   const handleRateChange = useCallback(
     (rate: number) => {
@@ -411,8 +455,17 @@ export function StudyApp() {
     (sentence: Sentence) => {
       orientToSentence(sentence);
       setFocus(sentenceFocus(sentence));
+      if (playRange?.loop) {
+        const safeStart = Math.max(0, sentence.start - 0.08);
+        const safeEnd = Math.min(duration || lesson.duration, sentence.end + 0.2);
+        setPlayRange({ start: safeStart, end: safeEnd, loop: true, kind: "sentence" });
+        if (videoRef.current) {
+          videoRef.current.currentTime = safeStart;
+          void videoRef.current.play().catch(() => undefined);
+        }
+      }
     },
-    [orientToSentence],
+    [orientToSentence, playRange?.loop, duration, lesson.duration],
   );
 
   const focusPhrase = useCallback((sentence: Sentence, tokens: WordToken[]) => {
@@ -421,10 +474,10 @@ export function StudyApp() {
 
   const toggleSave = useCallback(
     (selection: FocusSelection, entry: DictionaryEntry | null) => {
-      const existing = findSaved(items, selection.type, selection.text);
+      const existing = findSavedInSentence(items, selection.type, selection.text, selection.sentence.id);
       if (existing) {
         setItems((previous) => previous.filter((item) => item.id !== existing.id));
-        notify(`Removed “${selection.text}” from your notebook`);
+        notify(`Removed “${selection.text}” from this line`);
         return;
       }
       const item = makeLearningItem(selection, entry, lesson);
@@ -863,6 +916,7 @@ export function StudyApp() {
             onPhraseFocus={focusPhrase}
             onOpenNotebook={() => setNotebookOpen(true)}
             onStartPractice={() => startPractice("sentence")}
+            onPronounceStart={pauseVideo}
           />
 
           <SessionCard
@@ -923,6 +977,7 @@ export function StudyApp() {
           initialMode={practice.mode}
           initialExercise={practice.exercise}
           initialStartIndex={practice.startIndex}
+          isClipPlaying={clipPlaying}
           onClose={closePractice}
           onPlayClip={(start, end, rate) => playClip(start, end, rate, "practice")}
           onStopClip={stopClip}
@@ -930,6 +985,7 @@ export function StudyApp() {
           onSaveWord={saveWordFromPractice}
           onSaveSentence={saveSentenceFromPractice}
           onSavePhrase={savePhraseFromPractice}
+          onPronounceStart={pauseVideo}
         />
       ) : null}
 

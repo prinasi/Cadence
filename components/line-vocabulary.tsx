@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import type { DictionaryEntry, Exercise, LearningItem, Sentence, WordToken } from "@/lib/types";
 import { dictionaryForContext, fetchDictionaryEntry, fetchRelatedPhrases, lookupLocalWord } from "@/lib/dictionary";
-import { findSaved } from "@/lib/learning";
+import { findSavedInSentence } from "@/lib/learning";
 import { isContentWord, normalizeAnswer, normalizeWord } from "@/lib/text";
 import { playAudioUrl, speak } from "@/lib/speech";
 
@@ -25,6 +25,7 @@ type LineVocabularyProps = {
   onSaveWord: (sentence: Sentence, token: WordToken, entry: DictionaryEntry | null) => void;
   onSaveSentence: (sentence: Sentence) => void;
   onSavePhrase: (sentence: Sentence, tokens: WordToken[]) => void;
+  onPronounceStart?: () => void;
 };
 
 function candidateWords(exercise: Exercise): WordToken[] {
@@ -60,6 +61,7 @@ export function LineVocabulary({
   onSaveWord,
   onSaveSentence,
   onSavePhrase,
+  onPronounceStart,
 }: LineVocabularyProps) {
   const words = useMemo(() => candidateWords(exercise), [exercise]);
   const userWords = useMemo(() => new Set(normalizeAnswer(answer).split(" ").filter(Boolean)), [answer]);
@@ -131,17 +133,18 @@ export function LineVocabulary({
 
   if (!selected) return null;
 
-  const saved = findSaved(savedItems, "word", selected.text);
-  const savedLine = findSaved(savedItems, "sentence", exercise.sentence.text);
+  const saved = findSavedInSentence(savedItems, "word", selected.text, exercise.sentence.id);
+  const savedLine = findSavedInSentence(savedItems, "sentence", exercise.sentence.text, exercise.sentence.id);
   const phraseTokens =
     exercise.mode === "phrase" && exercise.wordStart !== undefined && exercise.wordEnd !== undefined
       ? exercise.sentence.words.slice(exercise.wordStart, exercise.wordEnd + 1)
       : [];
   const phraseText = phraseTokens.map((token) => token.text).join(" ");
-  const savedPhrase = phraseText ? findSaved(savedItems, "phrase", phraseText) : undefined;
+  const savedPhrase = phraseText ? findSavedInSentence(savedItems, "phrase", phraseText, exercise.sentence.id) : undefined;
   const selectedIsMissed = missed.some((word) => word.id === selected.id);
   const entryForSave = entry ? { ...entry, collocations: phrases } : null;
   const pronounce = () => {
+    onPronounceStart?.();
     if (entry?.audio) playAudioUrl(entry.audio);
     else speak(selected.text, 0.82);
   };

@@ -305,7 +305,12 @@ export function diffWords(expected: string, actual: string): DiffPart[] {
 }
 
 
-export type CompareWordPart = { text: string; status: "same" | "missing" | "extra" };
+export type CompareWordPart = {
+  text: string;
+  status: "same" | "missing" | "extra";
+  typo?: boolean;
+  typoFor?: string;
+};
 export type WordComparison = {
   expected: CompareWordPart[];
   actual: CompareWordPart[];
@@ -366,19 +371,61 @@ export function compareWords(expected: string, actual: string): WordComparison {
       extra.push(operation.text);
     }
   }
+
+  // Detect in-place typos between extra and missing words
+  for (const part of actualParts) {
+    if (part.status === "extra") {
+      const candidate = missing.find(
+        (target) => levenshtein(part.text, target) <= 2 && Math.max(part.text.length, target.length) >= 4,
+      );
+      if (candidate) {
+        part.typo = true;
+        part.typoFor = candidate;
+      }
+    }
+  }
+
   return { expected: expectedParts, actual: actualParts, missing, extra };
 }
 
+const EXPAND_CONTRACTIONS: [RegExp, string][] = [
+  [/\bcan['’]t\b/gi, "cannot"],
+  [/\bwon['’]t\b/gi, "will not"],
+  [/\bain['’]t\b/gi, "is not"],
+  [/\bshan['’]t\b/gi, "shall not"],
+  [/\blet['’]s\b/gi, "let us"],
+  [/\b([a-z]+)n['’]t\b/gi, "$1 not"],
+  [/\b([a-z]+)['’]re\b/gi, "$1 are"],
+  [/\b([a-z]+)['’]ve\b/gi, "$1 have"],
+  [/\b([a-z]+)['’]ll\b/gi, "$1 will"],
+  [/\b([a-z]+)['’]d\b/gi, "$1 would"],
+  [/\bi['’]m\b/gi, "i am"],
+  [/\bit['’]s\b/gi, "it is"],
+  [/\bthat['’]s\b/gi, "that is"],
+  [/\bwhat['’]s\b/gi, "what is"],
+  [/\bwho['’]s\b/gi, "who is"],
+  [/\bwhere['’]s\b/gi, "where is"],
+  [/\bthere['’]s\b/gi, "there is"],
+  [/\bhere['’]s\b/gi, "here is"],
+  [/\bhow['’]s\b/gi, "how is"],
+];
+
+export function expandContractions(text: string): string {
+  let result = text;
+  for (const [pattern, replacement] of EXPAND_CONTRACTIONS) {
+    result = result.replace(pattern, replacement);
+  }
+  return result;
+}
+
 export function scoreAnswer(expected: string, actual: string, mode: "word" | "phrase" | "sentence"): number {
-  const target = mode === "word" ? normalizeWord(expected) : normalizeAnswer(expected);
-  const value = mode === "word" ? normalizeWord(actual) : normalizeAnswer(actual);
+  const target = mode === "word" ? normalizeWord(expected) : normalizeAnswer(expandContractions(expected));
+  const value = mode === "word" ? normalizeWord(actual) : normalizeAnswer(expandContractions(actual));
   if (!value) return 0;
   if (target === value) return 1;
   if (mode === "word") {
     return Math.max(0, 1 - levenshtein(target, value) / Math.max(target.length, value.length));
   }
-  // Longest common subsequence keeps word order meaningful: "progress real"
-  // must not score as a perfect match for "real progress".
   const targetWords = target.split(" ").filter(Boolean);
   const valueWords = value.split(" ").filter(Boolean);
   const table: number[][] = Array.from({ length: targetWords.length + 1 }, () =>

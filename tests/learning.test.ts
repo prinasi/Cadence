@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 import { demoLesson } from "@/lib/demo";
 import { lookupLocalEntry } from "@/lib/dictionary";
 import {
+  findSavedInSentence,
+  isSavedInSentence,
   itemsToCsv,
   makeManualLearningItem,
   type ManualItemDraft,
@@ -49,5 +51,22 @@ describe("manual notebook items", () => {
     expect(csv).toContain('"He said ""hello"", then left."');
     expect(csv).toContain('"sentence"');
     expect(csv).toContain('"0.000"');
+  });
+
+  it("handles contextual saving of same word across different sentences without collision", () => {
+    const s1 = demoLesson.sentences[0];
+    const s2 = demoLesson.sentences[1];
+    const item1 = makeManualLearningItem({ type: "word", text: "right" }, demoLesson, s1);
+    const item2 = makeManualLearningItem({ type: "word", text: "right" }, demoLesson, s2);
+
+    expect(item1.id).not.toBe(item2.id);
+    const items = [item1, item2];
+
+    expect(isSavedInSentence(items, "word", "right", s1.id)).toBe(true);
+    expect(isSavedInSentence(items, "word", "right", s2.id)).toBe(true);
+    expect(isSavedInSentence(items, "word", "right", "s99")).toBe(false);
+
+    expect(findSavedInSentence(items, "word", "right", s1.id)?.context.sentenceId).toBe(s1.id);
+    expect(findSavedInSentence(items, "word", "right", s2.id)?.context.sentenceId).toBe(s2.id);
   });
 });

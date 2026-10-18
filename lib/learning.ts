@@ -21,7 +21,7 @@ export function makeLearningItem(
   const normalized = focus.type === "word" ? normalizeWord(focus.text) : normalizeAnswer(focus.text);
   const sentence = focus.sentence;
   return {
-    id: `${focus.type}-${hashString(normalized)}`,
+    id: `${focus.type}-${sentence.id}-${hashString(normalized)}`,
     type: focus.type,
     text: focus.text.trim(),
     normalized,
@@ -63,7 +63,7 @@ export function makeManualLearningItem(
   const text = draft.text.trim();
   const normalized = draft.type === "word" ? normalizeWord(text) : normalizeAnswer(text);
   return {
-    id: `${draft.type}-${hashString(normalized)}`,
+    id: `${draft.type}-${sentence.id}-${hashString(normalized)}`,
     type: draft.type,
     text,
     normalized,
@@ -95,9 +95,33 @@ export function isSaved(items: LearningItem[], type: LearningItem["type"], text:
   return items.some((item) => itemIdentity(item.type, item.text) === key);
 }
 
+export function isSavedInSentence(
+  items: LearningItem[],
+  type: LearningItem["type"],
+  text: string,
+  sentenceId: string,
+): boolean {
+  const key = itemIdentity(type, text);
+  return items.some(
+    (item) => itemIdentity(item.type, item.text) === key && item.context.sentenceId === sentenceId,
+  );
+}
+
 export function findSaved(items: LearningItem[], type: LearningItem["type"], text: string): LearningItem | undefined {
   const key = itemIdentity(type, text);
   return items.find((item) => itemIdentity(item.type, item.text) === key);
+}
+
+export function findSavedInSentence(
+  items: LearningItem[],
+  type: LearningItem["type"],
+  text: string,
+  sentenceId: string,
+): LearningItem | undefined {
+  const key = itemIdentity(type, text);
+  return items.find(
+    (item) => itemIdentity(item.type, item.text) === key && item.context.sentenceId === sentenceId,
+  );
 }
 
 export function formatSavedDate(value: string): string {

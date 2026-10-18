@@ -31,7 +31,14 @@ import type {
   WordToken,
 } from "@/lib/types";
 import { availableModes, buildSession, exerciseRangeLabel } from "@/lib/exercises";
-import { compareWords, formatTime, normalizeAnswer, scoreAnswer } from "@/lib/text";
+import {
+  compareWords,
+  expandContractions,
+  formatTime,
+  normalizeAnswer,
+  normalizeWord,
+  scoreAnswer,
+} from "@/lib/text";
 import { BrandMark } from "./brand";
 import { LineVocabulary } from "./line-vocabulary";
 
@@ -67,6 +74,7 @@ type PracticeRoomProps = {
   initialMode: ExerciseMode;
   initialExercise?: Exercise | null;
   initialStartIndex?: number;
+  isClipPlaying?: boolean;
   onClose: () => void;
   onPlayClip: (start: number, end: number, rate: number) => void;
   onStopClip: () => void;
@@ -74,7 +82,29 @@ type PracticeRoomProps = {
   onSaveWord: (sentence: Sentence, token: WordToken, entry: DictionaryEntry | null) => void;
   onSaveSentence: (sentence: Sentence) => void;
   onSavePhrase: (sentence: Sentence, tokens: WordToken[]) => void;
+  onPronounceStart?: () => void;
 };
+
+function getProgressiveHint(exercise: Exercise, hintLevel: number): string {
+  if (hintLevel <= 0) return exercise.hint;
+  if (exercise.mode === "word") {
+    const clean = exercise.answer.replace(/[^a-zA-Z0-9]/g, "");
+    if (hintLevel === 1) return exercise.hint;
+    const prefixLen = Math.min(clean.length - 1, Math.max(2, Math.floor(clean.length / 2)));
+    return `Starts with “${clean.slice(0, prefixLen).toUpperCase()}…” · ${clean.length} letters`;
+  }
+  if (exercise.mode === "sentence") {
+    const words = exercise.sentence.words.map((w) => w.text);
+    if (hintLevel === 1) return exercise.hint;
+    if (hintLevel === 2) {
+      const firstTwo = words.slice(0, 2).join(" ");
+      return `Starts with: “${firstTwo}…” (${words.length} words total)`;
+    }
+    const firstFour = words.slice(0, Math.min(4, words.length)).join(" ");
+    return `First ${Math.min(4, words.length)} words: “${firstFour}…”`;
+  }
+  return exercise.hint;
+}
 
 const MODE_LABEL: Record<ExerciseMode, string> = {
   sentence: "Lines",
@@ -155,6 +185,7 @@ export function PracticeRoom({
   initialMode,
   initialExercise,
   initialStartIndex = 0,
+  isClipPlaying,
   onClose,
   onPlayClip,
   onStopClip,
@@ -162,16 +193,19 @@ export function PracticeRoom({
   onSaveWord,
   onSaveSentence,
   onSavePhrase,
+  onPronounceStart,
 }: PracticeRoomProps) {
   const modes = useMemo(() => availableModes(lesson, savedItems), [lesson, savedItems]);
   const [session, setSession] = useState<SessionState>(() =>
     makeSession(lesson, savedItems, initialMode, 7, initialExercise, initialStartIndex),
   );
   const [slow, setSlow] = useState(false);
+  const [audioScope, setAudioScope] = useState<"clip" | "sentence">("clip");
   const [playing, setPlaying] = useState(false);
   const [showMeaning, setShowMeaning] = useState(false);
   const timerRef = useRef<number | null>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const singleInputRef = useRef<HTMLInputElement>(null);
 
   const exercise = session.exercises[session.index];
   const total = session.exercises.length;
@@ -187,6 +221,13 @@ export function PracticeRoom({
     setPlaying(false);
     onStopClip();
   };
+
+  useEffect(() => {
+    if (isClipPlaying === false && playing) {
+      setPlaying(false);
+      clearTimer();
+    }
+  }, [isClipPlaying, playing]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -214,8 +255,14 @@ export function PracticeRoom({
   }, [session.index, session.mode]);
 
   useEffect(() => {
-    if (session.checked) inputRef.current?.blur();
-  }, [session.checked]);
+    if (session.checked) {
+      inputRef.current?.blur();
+      singleInputRef.current?.blur();
+    } else {
+      if (session.mode === "word") singleInputRef.current?.focus();
+      else inputRef.current?.focus();
+    }
+  }, [session.checked, session.mode, session.index]);
 
   if (!exercise) {
     return null;
@@ -227,8 +274,11 @@ export function PracticeRoom({
       return;
     }
     const rate = slow ? 0.75 : 1;
-    onPlayClip(exercise.start, exercise.end, rate);
-    const estimated = ((exercise.end - exercise.start) / rate + 0.55) * 1000;
+    const isFullSentence = session.mode === "word" && audioScope === "sentence";
+    const start = isFullSentence ? exercise.sentence.start : exercise.start;
+    const end = isFullSentence ? exercise.sentence.end : exercise.end;
+    onPlayClip(start, end, rate);
+    const estimated = ((end - start) / rate + 2.5) * 1000;
     timerRef.current = window.setTimeout(() => {
       setPlaying(false);
       onStopClip();
@@ -262,7 +312,12 @@ export function PracticeRoom({
   const check = (gaveUp = false) => {
     if (session.checked) return;
     stopAudio();
-    const correct = !gaveUp && normalizeAnswer(session.answer) === normalizeAnswer(exercise.answer);
+    const correct =
+      !gaveUp &&
+      (session.mode === "word"
+        ? normalizeWord(session.answer) === normalizeWord(exercise.answer)
+        : normalizeAnswer(expandContractions(session.answer)) ===
+          normalizeAnswer(expandContractions(exercise.answer)));
     const score = gaveUp ? 0 : scoreAnswer(exercise.answer, session.answer, session.mode);
     const attempt: PracticeAttempt = {
       id: uid("attempt"),
@@ -278,23 +333,32 @@ export function PracticeRoom({
       createdAt: new Date().toISOString(),
     };
     onAttempt(attempt);
-    setSession((previous) => ({
-      ...previous,
-      checked: true,
-      feedback: { correct, score, revealed: gaveUp },
-      results: [
-        ...previous.results,
-        {
-          expected: exercise.answer,
-          answer: session.answer,
-          correct,
-          score,
-          replays: session.replays,
-          hints: session.hints,
-          revealed: gaveUp,
-        },
-      ],
-    }));
+
+    // Immediate mastery loop: re-queue missed exercises to the end of the round
+    const shouldRecycle = !correct && !gaveUp;
+    setSession((previous) => {
+      const remaining = previous.exercises.slice(previous.index + 1);
+      const alreadyRecycled = remaining.some((ex) => ex.id === exercise.id);
+      const exercises = shouldRecycle && !alreadyRecycled ? [...previous.exercises, exercise] : previous.exercises;
+      return {
+        ...previous,
+        exercises,
+        checked: true,
+        feedback: { correct, score, revealed: gaveUp },
+        results: [
+          ...previous.results,
+          {
+            expected: exercise.answer,
+            answer: session.answer,
+            correct,
+            score,
+            replays: session.replays,
+            hints: session.hints,
+            revealed: gaveUp,
+          },
+        ],
+      };
+    });
   };
 
   const advance = (previous: SessionState): SessionState => {
@@ -494,6 +558,30 @@ export function PracticeRoom({
                 <Gauge size={15} />
                 Slow 0.75×
               </button>
+              {session.mode === "word" ? (
+                <div className="audio-scope-toggle">
+                  <button
+                    type="button"
+                    className={`scope-pill ${audioScope === "clip" ? "is-active" : ""}`}
+                    onClick={() => {
+                      stopAudio();
+                      setAudioScope("clip");
+                    }}
+                  >
+                    Word clip
+                  </button>
+                  <button
+                    type="button"
+                    className={`scope-pill ${audioScope === "sentence" ? "is-active" : ""}`}
+                    onClick={() => {
+                      stopAudio();
+                      setAudioScope("sentence");
+                    }}
+                  >
+                    Full line
+                  </button>
+                </div>
+              ) : null}
               <span className="replay-count">
                 <Volume2 size={14} />
                 {session.replays} {session.replays === 1 ? "listen" : "listens"}
@@ -520,7 +608,7 @@ export function PracticeRoom({
               {session.hints > 0 ? (
                 <div className="hint-reveal">
                   <Lightbulb size={14} />
-                  {exercise.hint}
+                  {getProgressiveHint(exercise, session.hints)}
                 </div>
               ) : null}
             </div>
@@ -543,30 +631,55 @@ export function PracticeRoom({
                 </span>
               </div>
 
-              <textarea
-                ref={inputRef}
-                className={`answer-input ${session.checked ? "is-checked" : ""} ${
-                  session.feedback && !session.feedback.correct ? "is-wrong" : ""
-                }`}
-                value={session.answer}
-                onChange={(event) => setSession((previous) => ({ ...previous, answer: event.target.value }))}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter" && !event.shiftKey) {
-                    event.preventDefault();
-                    if (session.checked) next();
-                    else check(false);
+              {session.mode === "word" ? (
+                <input
+                  ref={singleInputRef}
+                  type="text"
+                  className={`answer-input is-word-input ${session.checked ? "is-checked" : ""} ${
+                    session.feedback && !session.feedback.correct ? "is-wrong" : ""
+                  }`}
+                  value={session.answer}
+                  onChange={(event) => setSession((previous) => ({ ...previous, answer: event.target.value }))}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                      event.preventDefault();
+                      if (session.checked) next();
+                      else check(false);
+                    }
+                  }}
+                  disabled={session.checked}
+                  placeholder="Type the word you heard…"
+                  spellCheck={false}
+                  autoCapitalize="off"
+                  autoCorrect="off"
+                  aria-label="Your spelling answer"
+                />
+              ) : (
+                <textarea
+                  ref={inputRef}
+                  className={`answer-input ${session.checked ? "is-checked" : ""} ${
+                    session.feedback && !session.feedback.correct ? "is-wrong" : ""
+                  }`}
+                  value={session.answer}
+                  onChange={(event) => setSession((previous) => ({ ...previous, answer: event.target.value }))}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" && !event.shiftKey) {
+                      event.preventDefault();
+                      if (session.checked) next();
+                      else check(false);
+                    }
+                  }}
+                  disabled={session.checked}
+                  rows={session.mode === "sentence" ? 5 : 2}
+                  placeholder={
+                    session.mode === "phrase" ? "Type the words together…" : "Write the sentence you heard…"
                   }
-                }}
-                disabled={session.checked}
-                rows={session.mode === "sentence" ? 5 : 2}
-                placeholder={
-                  session.mode === "word" ? "Type what you hear…" : session.mode === "phrase" ? "Type the words together…" : "Write the sentence you heard…"
-                }
-                spellCheck={false}
-                autoCapitalize="off"
-                autoCorrect="off"
-                aria-label="Your dictation answer"
-              />
+                  spellCheck={false}
+                  autoCapitalize="off"
+                  autoCorrect="off"
+                  aria-label="Your dictation answer"
+                />
+              )}
 
               {!session.checked ? (
                 <>
@@ -623,13 +736,18 @@ export function PracticeRoom({
                   {!session.feedback?.correct && comparison ? (
                     <div className="answer-comparison">
                       <span className="meaning-label">
-                        Your answer <em className="compare-legend-inline">red = different</em>
+                        Your answer <em className="compare-legend-inline">red = different · orange = typo</em>
                       </span>
                       {comparison.actual.length ? (
                         <p className="compared-line">
                           {comparison.actual.map((part, index) => (
-                            <span key={`${part.text}-${index}`} className={`feedback-word is-${part.status}`}>
+                            <span
+                              key={`${part.text}-${index}`}
+                              className={`feedback-word is-${part.status} ${part.typo ? "is-typo" : ""}`}
+                              title={part.typoFor ? `Typo for "${part.typoFor}"` : undefined}
+                            >
                               {part.text}
+                              {part.typoFor ? <em className="typo-tag"> (≈ {part.typoFor})</em> : null}
                             </span>
                           ))}
                         </p>
@@ -646,7 +764,7 @@ export function PracticeRoom({
                           ))}
                         </p>
                       ) : null}
-                      <p className="compare-legend">Punctuation is ignored. Red marks the words that differ from the clip.</p>
+                      <p className="compare-legend">Punctuation is ignored. Orange underlines mark near-spelling typos.</p>
                     </div>
                   ) : null}
 
@@ -685,6 +803,7 @@ export function PracticeRoom({
                     onSaveWord={onSaveWord}
                     onSaveSentence={onSaveSentence}
                     onSavePhrase={onSavePhrase}
+                    onPronounceStart={onPronounceStart}
                   />
                 </div>
               )}

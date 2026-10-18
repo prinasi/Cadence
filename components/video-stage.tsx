@@ -50,7 +50,8 @@ function CaptionLine({
   showChinese: boolean;
   onWordClick: (sentence: Sentence, token: WordToken) => void;
 }) {
-  const active = activeWordIndex(sentence, time);
+  const isSpeaking = time >= sentence.start - 0.15 && time <= sentence.end + 0.3;
+  const active = isSpeaking ? activeWordIndex(sentence, time) : -1;
   if (!showEnglish) {
     return (
       <div className="video-caption video-caption-listening">
@@ -61,7 +62,7 @@ function CaptionLine({
     );
   }
   return (
-    <div className="video-caption">
+    <div className={`video-caption ${!isSpeaking ? "video-caption-dimmed" : ""}`}>
       <p>
         {sentence.words.map((token, index) => (
           <span
@@ -108,9 +109,12 @@ export function VideoStage({
   const stageRef = useRef<HTMLDivElement>(null);
   const [started, setStarted] = useState(false);
   const [muted, setMuted] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragValue, setDragValue] = useState(0);
   const sentence = sentenceAtTime(lesson.sentences, currentTime);
   const total = duration || lesson.duration;
-  const progress = total > 0 ? Math.min(100, (currentTime / total) * 100) : 0;
+  const displayTime = isDragging ? dragValue : currentTime;
+  const progress = total > 0 ? Math.min(100, (displayTime / total) * 100) : 0;
 
   useEffect(() => {
     if (isPlaying) setStarted(true);
@@ -200,7 +204,7 @@ export function VideoStage({
 
       <div className="video-controls" onClick={(event) => event.stopPropagation()}>
         <div className="progress-row">
-          <span className="timecode">{formatTime(currentTime)}</span>
+          <span className="timecode">{formatTime(displayTime)}</span>
           <div className="progress-wrap">
             <input
               className="progress-range"
@@ -208,8 +212,23 @@ export function VideoStage({
               min={0}
               max={Math.max(total, 0.1)}
               step={0.01}
-              value={Math.min(currentTime, total)}
-              onChange={(event) => onSeek(Number(event.target.value))}
+              value={Math.min(displayTime, total)}
+              onPointerDown={() => {
+                setIsDragging(true);
+                setDragValue(currentTime);
+              }}
+              onChange={(event) => {
+                const nextVal = Number(event.target.value);
+                setDragValue(nextVal);
+                if (!isDragging) onSeek(nextVal);
+              }}
+              onPointerUp={() => {
+                if (isDragging) {
+                  setIsDragging(false);
+                  onSeek(dragValue);
+                }
+              }}
+              onPointerCancel={() => setIsDragging(false)}
               aria-label="Video progress"
               style={{
                 background: `linear-gradient(to right, var(--coral) 0%, var(--coral) ${progress}%, rgba(255,255,255,.22) ${progress}%, rgba(255,255,255,.22) 100%)`,

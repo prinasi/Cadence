@@ -56,11 +56,14 @@ describe("text normalization", () => {
     expect(splitIntoSentences("J. K. Rowling wrote it.")).toEqual(["J. K. Rowling wrote it."]);
   });
 
-  it("aligns expected and actual words for red feedback", () => {
+  it("aligns expected and actual words for red feedback and detects typos", () => {
     const comparison = compareWords("Most of us wait for progress.", "Most of us wait for progres");
     expect(comparison.actual.some((part) => part.status === "extra" && part.text === "progres")).toBe(true);
     expect(comparison.missing).toContain("progress");
     expect(comparison.expected.some((part) => part.status === "missing" && part.text === "progress")).toBe(true);
+    const typoPart = comparison.actual.find((part) => part.text === "progres");
+    expect(typoPart?.typo).toBe(true);
+    expect(typoPart?.typoFor).toBe("progress");
   });
 
   it("finds the active word and sentence", () => {
@@ -83,6 +86,11 @@ describe("text normalization", () => {
 describe("answer scoring", () => {
   it("ignores punctuation and extra whitespace", () => {
     expect(scoreAnswer("Most of us wait.", "most   of us wait", "sentence")).toBe(1);
+  });
+
+  it("recognizes common contractions as equivalent", () => {
+    expect(scoreAnswer("I don't think so.", "I do not think so", "sentence")).toBe(1);
+    expect(scoreAnswer("It's a great habit.", "it is a great habit", "sentence")).toBe(1);
   });
 
   it("scores near-miss words char by char", () => {
@@ -218,5 +226,28 @@ describe("exercise generation", () => {
     expect(exercise.answer).toBe("progress");
     expect(exercise.contextLine).toContain("_____");
     expect(exercise.contextLine).not.toContain("progress");
+  });
+
+  it("prioritizes saved notebook words in word practice rounds", () => {
+    const s2 = demoLesson.sentences[1];
+    const savedItem = {
+      id: "word-s2-progress",
+      type: "word" as const,
+      text: "progress",
+      normalized: "progress",
+      createdAt: new Date().toISOString(),
+      practice: { attempts: 2, correct: 0 },
+      context: {
+        lessonId: demoLesson.id,
+        lessonTitle: demoLesson.title,
+        sentenceId: s2.id,
+        sentence: s2.text,
+        start: s2.start,
+        end: s2.end,
+      },
+    };
+    const exercises = buildSession(demoLesson, "word", 3, [savedItem], 1);
+    expect(exercises.some((ex) => ex.answer === "progress")).toBe(true);
+    expect(exercises[0].answer).toBe("progress");
   });
 });

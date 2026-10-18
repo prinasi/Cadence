@@ -25,7 +25,7 @@ import type {
   WordToken,
 } from "@/lib/types";
 import type { TodayStats } from "@/lib/learning";
-import { findSaved, typeLabel } from "@/lib/learning";
+import { findSaved, findSavedInSentence, typeLabel } from "@/lib/learning";
 import { dictionaryForContext, fetchDictionaryEntry, lookupLocalEntry } from "@/lib/dictionary";
 import { findPhraseTokens, formatTime, normalizePhrase } from "@/lib/text";
 import { playAudioUrl, speak } from "@/lib/speech";
@@ -44,6 +44,7 @@ type InspectorProps = {
   onPhraseFocus: (sentence: Sentence, tokens: WordToken[]) => void;
   onOpenNotebook: () => void;
   onStartPractice: () => void;
+  onPronounceStart?: () => void;
 };
 
 function SourceBadge({ source }: { source: DictionaryEntry["source"] }) {
@@ -197,9 +198,10 @@ function DictionaryView({
   onToggleSave,
   onPractice,
   onPlayRange,
+  onPronounceStart,
 }: Pick<
   InspectorProps,
-  "focus" | "lesson" | "savedItems" | "onClose" | "onToggleSave" | "onPractice" | "onPlayRange"
+  "focus" | "lesson" | "savedItems" | "onClose" | "onToggleSave" | "onPractice" | "onPlayRange" | "onPronounceStart"
 > & { focus: FocusSelection }) {
   const [entry, setEntry] = useState<DictionaryEntry | null>(() =>
     lookupLocalEntry(focus.text, focus.type),
@@ -230,7 +232,8 @@ function DictionaryView({
     };
   }, [focus]);
 
-  const saved = findSaved(savedItems, focus.type, focus.text);
+  const saved = findSavedInSentence(savedItems, focus.type, focus.text, focus.sentence.id);
+  const savedElsewhere = !saved && findSaved(savedItems, focus.type, focus.text);
   const phraseTranslation = useMemo(() => {
     if (focus.type !== "phrase") return undefined;
     const match = lesson.focusPhrases?.find(
@@ -243,6 +246,7 @@ function DictionaryView({
   const meaning = entry?.definition ?? (focus.type === "phrase" ? "Read this phrase inside the line before saving it." : undefined);
 
   const pronounce = () => {
+    onPronounceStart?.();
     if (entry?.audio) playAudioUrl(entry.audio);
     else speak(focus.text, 0.82);
   };
@@ -380,7 +384,7 @@ function DictionaryView({
           onClick={() => onToggleSave(focus, entryForSave)}
         >
           {saved ? <BookmarkCheck size={16} /> : <Bookmark size={16} />}
-          {saved ? "Saved to notebook" : "Save this"}
+          {saved ? "Saved to this line" : savedElsewhere ? "Save to this line" : "Save this"}
         </button>
         <button type="button" className="button button-ghost" onClick={() => onPractice(focus)}>
           <Sparkles size={15} />

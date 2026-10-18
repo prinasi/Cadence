@@ -32,7 +32,7 @@ type NotebookDrawerProps = {
   currentSentence?: Sentence;
 };
 
-type Filter = "all" | LearningItem["type"];
+type Filter = "all" | LearningItem["type"] | "review" | "mastered";
 
 export function NotebookDrawer({
   open,
@@ -81,7 +81,15 @@ export function NotebookDrawer({
   const filtered = useMemo(() => {
     const search = query.trim().toLowerCase();
     return items.filter((item) => {
-      if (filter !== "all" && item.type !== filter) return false;
+      if (filter === "review") {
+        const needsReview = item.practice.attempts === 0 || item.practice.correct / item.practice.attempts < 0.7;
+        if (!needsReview) return false;
+      } else if (filter === "mastered") {
+        const isMastered = item.practice.attempts > 0 && item.practice.correct / item.practice.attempts >= 0.7;
+        if (!isMastered) return false;
+      } else if (filter !== "all" && item.type !== filter) {
+        return false;
+      }
       if (!search) return true;
       return [item.text, item.translation, item.definition, item.context.sentence]
         .filter(Boolean)
@@ -95,6 +103,8 @@ export function NotebookDrawer({
       word: items.filter((item) => item.type === "word").length,
       phrase: items.filter((item) => item.type === "phrase").length,
       sentence: items.filter((item) => item.type === "sentence").length,
+      review: items.filter((item) => item.practice.attempts === 0 || item.practice.correct / item.practice.attempts < 0.7).length,
+      mastered: items.filter((item) => item.practice.attempts > 0 && item.practice.correct / item.practice.attempts >= 0.7).length,
     }),
     [items],
   );
@@ -213,15 +223,24 @@ export function NotebookDrawer({
         </div>
 
         <div className="notebook-filters">
-          {(["all", "word", "phrase", "sentence"] as Filter[]).map((value) => (
+          {(
+            [
+              { id: "all", label: "All" },
+              { id: "word", label: "Words" },
+              { id: "phrase", label: "Phrases" },
+              { id: "sentence", label: "Lines" },
+              { id: "review", label: "Review" },
+              { id: "mastered", label: "Mastered" },
+            ] as const
+          ).map(({ id, label }) => (
             <button
-              key={value}
+              key={id}
               type="button"
-              className={filter === value ? "is-active" : ""}
-              onClick={() => setFilter(value)}
+              className={filter === id ? "is-active" : ""}
+              onClick={() => setFilter(id)}
             >
-              {value === "all" ? "All" : `${typeLabel(value)}s`}
-              <span>{counts[value]}</span>
+              {label}
+              <span>{counts[id]}</span>
             </button>
           ))}
         </div>
@@ -237,7 +256,10 @@ export function NotebookDrawer({
                       {item.type === "word" ? <Sparkles size={13} /> : item.type === "phrase" ? <AlignLeft size={13} /> : <BookOpenText size={13} />}
                       {typeLabel(item.type)}
                     </span>
-                    <span className="notebook-date">{formatSavedDate(item.createdAt)}</span>
+                    <span className="notebook-date">
+                      {!sameLesson ? `[${item.context.lessonTitle}] · ` : ""}
+                      {formatSavedDate(item.createdAt)}
+                    </span>
                   </div>
                   <h3>{item.text}</h3>
                   {item.phonetic ? <span className="notebook-phonetic">{item.phonetic}</span> : null}
