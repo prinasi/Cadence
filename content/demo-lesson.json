@@ -1,0 +1,1212 @@
+{
+  "id": "small-habits",
+  "title": "The Quiet Power of Small Habits",
+  "subtitle": "Why consistency beats motivation — and what that means for learning English.",
+  "speaker": "Samantha · Cadence Studio",
+  "accent": "General American",
+  "level": "B1–B2",
+  "duration": 41.068,
+  "videoSrc": "/demo/small-habits.mp4",
+  "poster": "/demo/small-habits.jpg",
+  "sourceNote": "Original narration synthesized for this demo. No third-party footage or transcript.",
+  "alignment": "exact",
+  "tags": [
+    "Mindset",
+    "Habits",
+    "Learning"
+  ],
+  "sentences": [
+    {
+      "id": "s1",
+      "index": 0,
+      "text": "Most of us wait for a big moment to change our lives.",
+      "translation": "我们大多数人都在等待一个重大时刻来改变人生。",
+      "start": 0.0,
+      "end": 3.034,
+      "words": [
+        {
+          "text": "Most",
+          "display": "Most",
+          "prefix": "",
+          "suffix": "",
+          "start": 0.0,
+          "end": 0.34,
+          "id": "s1-w1"
+        },
+        {
+          "text": "of",
+          "display": "of",
+          "prefix": "",
+          "suffix": "",
+          "start": 0.34,
+          "end": 0.48,
+          "id": "s1-w2"
+        },
+        {
+          "text": "us",
+          "display": "us",
+          "prefix": "",
+          "suffix": "",
+          "start": 0.48,
+          "end": 0.66,
+          "id": "s1-w3"
+        },
+        {
+          "text": "wait",
+          "display": "wait",
+          "prefix": "",
+          "suffix": "",
+          "start": 0.66,
+          "end": 0.86,
+          "id": "s1-w4"
+        },
+        {
+          "text": "for",
+          "display": "for",
+          "prefix": "",
+          "suffix": "",
+          "start": 0.86,
+          "end": 1.1,
+          "id": "s1-w5"
+        },
+        {
+          "text": "a",
+          "display": "a",
+          "prefix": "",
+          "suffix": "",
+          "start": 1.1,
+          "end": 1.18,
+          "id": "s1-w6"
+        },
+        {
+          "text": "big",
+          "display": "big",
+          "prefix": "",
+          "suffix": "",
+          "start": 1.18,
+          "end": 1.38,
+          "id": "s1-w7"
+        },
+        {
+          "text": "moment",
+          "display": "moment",
+          "prefix": "",
+          "suffix": "",
+          "start": 1.38,
+          "end": 1.68,
+          "id": "s1-w8"
+        },
+        {
+          "text": "to",
+          "display": "to",
+          "prefix": "",
+          "suffix": "",
+          "start": 1.68,
+          "end": 1.9,
+          "id": "s1-w9"
+        },
+        {
+          "text": "change",
+          "display": "change",
+          "prefix": "",
+          "suffix": "",
+          "start": 1.9,
+          "end": 2.22,
+          "id": "s1-w10"
+        },
+        {
+          "text": "our",
+          "display": "our",
+          "prefix": "",
+          "suffix": "",
+          "start": 2.22,
+          "end": 2.48,
+          "id": "s1-w11"
+        },
+        {
+          "text": "lives",
+          "display": "lives.",
+          "prefix": "",
+          "suffix": ".",
+          "start": 2.48,
+          "end": 2.76,
+          "id": "s1-w12"
+        }
+      ]
+    },
+    {
+      "id": "s2",
+      "index": 1,
+      "text": "But real progress rarely arrives in a single, dramatic leap.",
+      "translation": "但真正的进步很少来自一次戏剧性的飞跃。",
+      "start": 3.314,
+      "end": 7.127,
+      "words": [
+        {
+          "text": "But",
+          "display": "But",
+          "prefix": "",
+          "suffix": "",
+          "start": 3.454,
+          "end": 3.674,
+          "id": "s2-w1"
+        },
+        {
+          "text": "real",
+          "display": "real",
+          "prefix": "",
+          "suffix": "",
+          "start": 3.674,
+          "end": 3.954,
+          "id": "s2-w2"
+        },
+        {
+          "text": "progress",
+          "display": "progress",
+          "prefix": "",
+          "suffix": "",
+          "start": 3.954,
+          "end": 4.434,
+          "id": "s2-w3"
+        },
+        {
+          "text": "rarely",
+          "display": "rarely",
+          "prefix": "",
+          "suffix": "",
+          "start": 4.434,
+          "end": 4.834,
+          "id": "s2-w4"
+        },
+        {
+          "text": "arrives",
+          "display": "arrives",
+          "prefix": "",
+          "suffix": "",
+          "start": 4.834,
+          "end": 5.174,
+          "id": "s2-w5"
+        },
+        {
+          "text": "in",
+          "display": "in",
+          "prefix": "",
+          "suffix": "",
+          "start": 5.174,
+          "end": 5.414,
+          "id": "s2-w6"
+        },
+        {
+          "text": "a",
+          "display": "a",
+          "prefix": "",
+          "suffix": "",
+          "start": 5.414,
+          "end": 5.554,
+          "id": "s2-w7"
+        },
+        {
+          "text": "single",
+          "display": "single,",
+          "prefix": "",
+          "suffix": ",",
+          "start": 5.554,
+          "end": 5.854,
+          "id": "s2-w8"
+        },
+        {
+          "text": "dramatic",
+          "display": "dramatic",
+          "prefix": "",
+          "suffix": "",
+          "start": 5.854,
+          "end": 6.703,
+          "id": "s2-w9"
+        },
+        {
+          "text": "leap",
+          "display": "leap.",
+          "prefix": "",
+          "suffix": ".",
+          "start": 6.703,
+          "end": 7.127,
+          "id": "s2-w10"
+        }
+      ]
+    },
+    {
+      "id": "s3",
+      "index": 2,
+      "text": "It grows quietly, through small choices repeated day after day.",
+      "translation": "它安静地生长，源于日复一日重复的小选择。",
+      "start": 7.407,
+      "end": 11.573,
+      "words": [
+        {
+          "text": "It",
+          "display": "It",
+          "prefix": "",
+          "suffix": "",
+          "start": 7.547,
+          "end": 7.767,
+          "id": "s3-w1"
+        },
+        {
+          "text": "grows",
+          "display": "grows",
+          "prefix": "",
+          "suffix": "",
+          "start": 7.767,
+          "end": 8.007,
+          "id": "s3-w2"
+        },
+        {
+          "text": "quietly",
+          "display": "quietly,",
+          "prefix": "",
+          "suffix": ",",
+          "start": 8.007,
+          "end": 8.507,
+          "id": "s3-w3"
+        },
+        {
+          "text": "through",
+          "display": "through",
+          "prefix": "",
+          "suffix": "",
+          "start": 8.887,
+          "end": 9.127,
+          "id": "s3-w4"
+        },
+        {
+          "text": "small",
+          "display": "small",
+          "prefix": "",
+          "suffix": "",
+          "start": 9.127,
+          "end": 9.507,
+          "id": "s3-w5"
+        },
+        {
+          "text": "choices",
+          "display": "choices",
+          "prefix": "",
+          "suffix": "",
+          "start": 9.507,
+          "end": 9.907,
+          "id": "s3-w6"
+        },
+        {
+          "text": "repeated",
+          "display": "repeated",
+          "prefix": "",
+          "suffix": "",
+          "start": 9.907,
+          "end": 10.407,
+          "id": "s3-w7"
+        },
+        {
+          "text": "day",
+          "display": "day",
+          "prefix": "",
+          "suffix": "",
+          "start": 10.407,
+          "end": 10.767,
+          "id": "s3-w8"
+        },
+        {
+          "text": "after",
+          "display": "after",
+          "prefix": "",
+          "suffix": "",
+          "start": 10.767,
+          "end": 11.047,
+          "id": "s3-w9"
+        },
+        {
+          "text": "day",
+          "display": "day.",
+          "prefix": "",
+          "suffix": ".",
+          "start": 11.047,
+          "end": 11.367,
+          "id": "s3-w10"
+        }
+      ]
+    },
+    {
+      "id": "s4",
+      "index": 3,
+      "text": "A page read before bed becomes a finished book.",
+      "translation": "睡前读一页，最终会变成一本读完的书。",
+      "start": 11.853,
+      "end": 14.706,
+      "words": [
+        {
+          "text": "A",
+          "display": "A",
+          "prefix": "",
+          "suffix": "",
+          "start": 11.993,
+          "end": 12.233,
+          "id": "s4-w1"
+        },
+        {
+          "text": "page",
+          "display": "page",
+          "prefix": "",
+          "suffix": "",
+          "start": 12.233,
+          "end": 12.473,
+          "id": "s4-w2"
+        },
+        {
+          "text": "read",
+          "display": "read",
+          "prefix": "",
+          "suffix": "",
+          "start": 12.473,
+          "end": 12.713,
+          "id": "s4-w3"
+        },
+        {
+          "text": "before",
+          "display": "before",
+          "prefix": "",
+          "suffix": "",
+          "start": 12.713,
+          "end": 13.093,
+          "id": "s4-w4"
+        },
+        {
+          "text": "bed",
+          "display": "bed",
+          "prefix": "",
+          "suffix": "",
+          "start": 13.093,
+          "end": 13.333,
+          "id": "s4-w5"
+        },
+        {
+          "text": "becomes",
+          "display": "becomes",
+          "prefix": "",
+          "suffix": "",
+          "start": 13.333,
+          "end": 13.693,
+          "id": "s4-w6"
+        },
+        {
+          "text": "a",
+          "display": "a",
+          "prefix": "",
+          "suffix": "",
+          "start": 13.693,
+          "end": 14.153,
+          "id": "s4-w7"
+        },
+        {
+          "text": "finished",
+          "display": "finished",
+          "prefix": "",
+          "suffix": "",
+          "start": 14.153,
+          "end": 14.193,
+          "id": "s4-w8"
+        },
+        {
+          "text": "book",
+          "display": "book.",
+          "prefix": "",
+          "suffix": ".",
+          "start": 14.193,
+          "end": 14.493,
+          "id": "s4-w9"
+        }
+      ]
+    },
+    {
+      "id": "s5",
+      "index": 4,
+      "text": "A short walk after lunch becomes a stronger body.",
+      "translation": "午饭後散一小段步，最终会变成更强健的身体。",
+      "start": 14.986,
+      "end": 18.084,
+      "words": [
+        {
+          "text": "A",
+          "display": "A",
+          "prefix": "",
+          "suffix": "",
+          "start": 15.126,
+          "end": 15.386,
+          "id": "s5-w1"
+        },
+        {
+          "text": "short",
+          "display": "short",
+          "prefix": "",
+          "suffix": "",
+          "start": 15.386,
+          "end": 15.606,
+          "id": "s5-w2"
+        },
+        {
+          "text": "walk",
+          "display": "walk",
+          "prefix": "",
+          "suffix": "",
+          "start": 15.606,
+          "end": 15.866,
+          "id": "s5-w3"
+        },
+        {
+          "text": "after",
+          "display": "after",
+          "prefix": "",
+          "suffix": "",
+          "start": 15.866,
+          "end": 16.206,
+          "id": "s5-w4"
+        },
+        {
+          "text": "lunch",
+          "display": "lunch",
+          "prefix": "",
+          "suffix": "",
+          "start": 16.206,
+          "end": 16.466,
+          "id": "s5-w5"
+        },
+        {
+          "text": "becomes",
+          "display": "becomes",
+          "prefix": "",
+          "suffix": "",
+          "start": 16.466,
+          "end": 16.866,
+          "id": "s5-w6"
+        },
+        {
+          "text": "a",
+          "display": "a",
+          "prefix": "",
+          "suffix": "",
+          "start": 16.866,
+          "end": 17.186,
+          "id": "s5-w7"
+        },
+        {
+          "text": "stronger",
+          "display": "stronger",
+          "prefix": "",
+          "suffix": "",
+          "start": 17.186,
+          "end": 17.446,
+          "id": "s5-w8"
+        },
+        {
+          "text": "body",
+          "display": "body.",
+          "prefix": "",
+          "suffix": ".",
+          "start": 17.446,
+          "end": 17.826,
+          "id": "s5-w9"
+        }
+      ]
+    },
+    {
+      "id": "s6",
+      "index": 5,
+      "text": "And five minutes of English practice becomes a conversation you never expected to have.",
+      "translation": "而每天五分钟的英语练习，会变成一场你从未想过自己能进行的对话。",
+      "start": 18.364,
+      "end": 23.411,
+      "words": [
+        {
+          "text": "And",
+          "display": "And",
+          "prefix": "",
+          "suffix": "",
+          "start": 18.504,
+          "end": 18.764,
+          "id": "s6-w1"
+        },
+        {
+          "text": "five",
+          "display": "five",
+          "prefix": "",
+          "suffix": "",
+          "start": 18.764,
+          "end": 19.084,
+          "id": "s6-w2"
+        },
+        {
+          "text": "minutes",
+          "display": "minutes",
+          "prefix": "",
+          "suffix": "",
+          "start": 19.084,
+          "end": 19.344,
+          "id": "s6-w3"
+        },
+        {
+          "text": "of",
+          "display": "of",
+          "prefix": "",
+          "suffix": "",
+          "start": 19.344,
+          "end": 19.624,
+          "id": "s6-w4"
+        },
+        {
+          "text": "English",
+          "display": "English",
+          "prefix": "",
+          "suffix": "",
+          "start": 19.624,
+          "end": 19.904,
+          "id": "s6-w5"
+        },
+        {
+          "text": "practice",
+          "display": "practice",
+          "prefix": "",
+          "suffix": "",
+          "start": 19.904,
+          "end": 20.424,
+          "id": "s6-w6"
+        },
+        {
+          "text": "becomes",
+          "display": "becomes",
+          "prefix": "",
+          "suffix": "",
+          "start": 20.424,
+          "end": 20.864,
+          "id": "s6-w7"
+        },
+        {
+          "text": "a",
+          "display": "a",
+          "prefix": "",
+          "suffix": "",
+          "start": 20.864,
+          "end": 21.344,
+          "id": "s6-w8"
+        },
+        {
+          "text": "conversation",
+          "display": "conversation",
+          "prefix": "",
+          "suffix": "",
+          "start": 21.344,
+          "end": 21.624,
+          "id": "s6-w9"
+        },
+        {
+          "text": "you",
+          "display": "you",
+          "prefix": "",
+          "suffix": "",
+          "start": 21.624,
+          "end": 22.004,
+          "id": "s6-w10"
+        },
+        {
+          "text": "never",
+          "display": "never",
+          "prefix": "",
+          "suffix": "",
+          "start": 22.004,
+          "end": 22.244,
+          "id": "s6-w11"
+        },
+        {
+          "text": "expected",
+          "display": "expected",
+          "prefix": "",
+          "suffix": "",
+          "start": 22.244,
+          "end": 22.664,
+          "id": "s6-w12"
+        },
+        {
+          "text": "to",
+          "display": "to",
+          "prefix": "",
+          "suffix": "",
+          "start": 22.664,
+          "end": 23.004,
+          "id": "s6-w13"
+        },
+        {
+          "text": "have",
+          "display": "have.",
+          "prefix": "",
+          "suffix": ".",
+          "start": 23.004,
+          "end": 23.244,
+          "id": "s6-w14"
+        }
+      ]
+    },
+    {
+      "id": "s7",
+      "index": 6,
+      "text": "So instead of waiting for motivation, build a system you can return to.",
+      "translation": "所以，与其等待动力，不如建立一个你可以不断回到其中的系统。",
+      "start": 23.691,
+      "end": 28.141,
+      "words": [
+        {
+          "text": "So",
+          "display": "So",
+          "prefix": "",
+          "suffix": "",
+          "start": 23.831,
+          "end": 24.191,
+          "id": "s7-w1"
+        },
+        {
+          "text": "instead",
+          "display": "instead",
+          "prefix": "",
+          "suffix": "",
+          "start": 24.191,
+          "end": 24.511,
+          "id": "s7-w2"
+        },
+        {
+          "text": "of",
+          "display": "of",
+          "prefix": "",
+          "suffix": "",
+          "start": 24.511,
+          "end": 24.711,
+          "id": "s7-w3"
+        },
+        {
+          "text": "waiting",
+          "display": "waiting",
+          "prefix": "",
+          "suffix": "",
+          "start": 24.711,
+          "end": 24.951,
+          "id": "s7-w4"
+        },
+        {
+          "text": "for",
+          "display": "for",
+          "prefix": "",
+          "suffix": "",
+          "start": 24.951,
+          "end": 25.271,
+          "id": "s7-w5"
+        },
+        {
+          "text": "motivation",
+          "display": "motivation,",
+          "prefix": "",
+          "suffix": ",",
+          "start": 25.271,
+          "end": 25.891,
+          "id": "s7-w6"
+        },
+        {
+          "text": "build",
+          "display": "build",
+          "prefix": "",
+          "suffix": "",
+          "start": 26.251,
+          "end": 26.371,
+          "id": "s7-w7"
+        },
+        {
+          "text": "a",
+          "display": "a",
+          "prefix": "",
+          "suffix": "",
+          "start": 26.371,
+          "end": 26.671,
+          "id": "s7-w8"
+        },
+        {
+          "text": "system",
+          "display": "system",
+          "prefix": "",
+          "suffix": "",
+          "start": 26.671,
+          "end": 26.851,
+          "id": "s7-w9"
+        },
+        {
+          "text": "you",
+          "display": "you",
+          "prefix": "",
+          "suffix": "",
+          "start": 26.851,
+          "end": 27.071,
+          "id": "s7-w10"
+        },
+        {
+          "text": "can",
+          "display": "can",
+          "prefix": "",
+          "suffix": "",
+          "start": 27.071,
+          "end": 27.271,
+          "id": "s7-w11"
+        },
+        {
+          "text": "return",
+          "display": "return",
+          "prefix": "",
+          "suffix": "",
+          "start": 27.271,
+          "end": 27.591,
+          "id": "s7-w12"
+        },
+        {
+          "text": "to",
+          "display": "to.",
+          "prefix": "",
+          "suffix": ".",
+          "start": 27.591,
+          "end": 28.051,
+          "id": "s7-w13"
+        }
+      ]
+    },
+    {
+      "id": "s8",
+      "index": 7,
+      "text": "Start small, stay consistent, and let the ordinary do its work.",
+      "translation": "从小处开始，保持持续，让平凡的事发挥作用。",
+      "start": 28.421,
+      "end": 32.859,
+      "words": [
+        {
+          "text": "Start",
+          "display": "Start",
+          "prefix": "",
+          "suffix": "",
+          "start": 28.561,
+          "end": 29.001,
+          "id": "s8-w1"
+        },
+        {
+          "text": "small",
+          "display": "small,",
+          "prefix": "",
+          "suffix": ",",
+          "start": 29.001,
+          "end": 29.421,
+          "id": "s8-w2"
+        },
+        {
+          "text": "stay",
+          "display": "stay",
+          "prefix": "",
+          "suffix": "",
+          "start": 29.761,
+          "end": 30.001,
+          "id": "s8-w3"
+        },
+        {
+          "text": "consistent",
+          "display": "consistent,",
+          "prefix": "",
+          "suffix": ",",
+          "start": 30.001,
+          "end": 30.541,
+          "id": "s8-w4"
+        },
+        {
+          "text": "and",
+          "display": "and",
+          "prefix": "",
+          "suffix": "",
+          "start": 30.941,
+          "end": 31.081,
+          "id": "s8-w5"
+        },
+        {
+          "text": "let",
+          "display": "let",
+          "prefix": "",
+          "suffix": "",
+          "start": 31.081,
+          "end": 31.281,
+          "id": "s8-w6"
+        },
+        {
+          "text": "the",
+          "display": "the",
+          "prefix": "",
+          "suffix": "",
+          "start": 31.281,
+          "end": 31.421,
+          "id": "s8-w7"
+        },
+        {
+          "text": "ordinary",
+          "display": "ordinary",
+          "prefix": "",
+          "suffix": "",
+          "start": 31.421,
+          "end": 31.841,
+          "id": "s8-w8"
+        },
+        {
+          "text": "do",
+          "display": "do",
+          "prefix": "",
+          "suffix": "",
+          "start": 31.841,
+          "end": 32.101,
+          "id": "s8-w9"
+        },
+        {
+          "text": "its",
+          "display": "its",
+          "prefix": "",
+          "suffix": "",
+          "start": 32.101,
+          "end": 32.361,
+          "id": "s8-w10"
+        },
+        {
+          "text": "work",
+          "display": "work.",
+          "prefix": "",
+          "suffix": ".",
+          "start": 32.361,
+          "end": 32.661,
+          "id": "s8-w11"
+        }
+      ]
+    },
+    {
+      "id": "s9",
+      "index": 8,
+      "text": "You do not need a perfect morning or a brand new plan.",
+      "translation": "你不需要一个完美的早晨，也不需要一份全新的计划。",
+      "start": 33.139,
+      "end": 36.302,
+      "words": [
+        {
+          "text": "You",
+          "display": "You",
+          "prefix": "",
+          "suffix": "",
+          "start": 33.279,
+          "end": 33.499,
+          "id": "s9-w1"
+        },
+        {
+          "text": "do",
+          "display": "do",
+          "prefix": "",
+          "suffix": "",
+          "start": 33.499,
+          "end": 33.699,
+          "id": "s9-w2"
+        },
+        {
+          "text": "not",
+          "display": "not",
+          "prefix": "",
+          "suffix": "",
+          "start": 33.699,
+          "end": 33.899,
+          "id": "s9-w3"
+        },
+        {
+          "text": "need",
+          "display": "need",
+          "prefix": "",
+          "suffix": "",
+          "start": 33.899,
+          "end": 34.079,
+          "id": "s9-w4"
+        },
+        {
+          "text": "a",
+          "display": "a",
+          "prefix": "",
+          "suffix": "",
+          "start": 34.079,
+          "end": 34.279,
+          "id": "s9-w5"
+        },
+        {
+          "text": "perfect",
+          "display": "perfect",
+          "prefix": "",
+          "suffix": "",
+          "start": 34.279,
+          "end": 34.599,
+          "id": "s9-w6"
+        },
+        {
+          "text": "morning",
+          "display": "morning",
+          "prefix": "",
+          "suffix": "",
+          "start": 34.599,
+          "end": 34.919,
+          "id": "s9-w7"
+        },
+        {
+          "text": "or",
+          "display": "or",
+          "prefix": "",
+          "suffix": "",
+          "start": 34.919,
+          "end": 35.179,
+          "id": "s9-w8"
+        },
+        {
+          "text": "a",
+          "display": "a",
+          "prefix": "",
+          "suffix": "",
+          "start": 35.179,
+          "end": 35.299,
+          "id": "s9-w9"
+        },
+        {
+          "text": "brand",
+          "display": "brand",
+          "prefix": "",
+          "suffix": "",
+          "start": 35.299,
+          "end": 35.539,
+          "id": "s9-w10"
+        },
+        {
+          "text": "new",
+          "display": "new",
+          "prefix": "",
+          "suffix": "",
+          "start": 35.539,
+          "end": 35.779,
+          "id": "s9-w11"
+        },
+        {
+          "text": "plan",
+          "display": "plan.",
+          "prefix": "",
+          "suffix": ".",
+          "start": 35.779,
+          "end": 36.019,
+          "id": "s9-w12"
+        }
+      ]
+    },
+    {
+      "id": "s10",
+      "index": 9,
+      "text": "You only need the next small step, and the willingness to take it again tomorrow.",
+      "translation": "你只需要下一个小步骤，以及明天再迈出一步的意愿。",
+      "start": 36.582,
+      "end": 41.068,
+      "words": [
+        {
+          "text": "You",
+          "display": "You",
+          "prefix": "",
+          "suffix": "",
+          "start": 36.722,
+          "end": 36.962,
+          "id": "s10-w1"
+        },
+        {
+          "text": "only",
+          "display": "only",
+          "prefix": "",
+          "suffix": "",
+          "start": 36.962,
+          "end": 37.222,
+          "id": "s10-w2"
+        },
+        {
+          "text": "need",
+          "display": "need",
+          "prefix": "",
+          "suffix": "",
+          "start": 37.222,
+          "end": 37.442,
+          "id": "s10-w3"
+        },
+        {
+          "text": "the",
+          "display": "the",
+          "prefix": "",
+          "suffix": "",
+          "start": 37.442,
+          "end": 37.922,
+          "id": "s10-w4"
+        },
+        {
+          "text": "next",
+          "display": "next",
+          "prefix": "",
+          "suffix": "",
+          "start": 37.922,
+          "end": 37.962,
+          "id": "s10-w5"
+        },
+        {
+          "text": "small",
+          "display": "small",
+          "prefix": "",
+          "suffix": "",
+          "start": 37.942,
+          "end": 38.262,
+          "id": "s10-w6"
+        },
+        {
+          "text": "step",
+          "display": "step,",
+          "prefix": "",
+          "suffix": ",",
+          "start": 38.262,
+          "end": 38.582,
+          "id": "s10-w7"
+        },
+        {
+          "text": "and",
+          "display": "and",
+          "prefix": "",
+          "suffix": "",
+          "start": 38.902,
+          "end": 38.982,
+          "id": "s10-w8"
+        },
+        {
+          "text": "the",
+          "display": "the",
+          "prefix": "",
+          "suffix": "",
+          "start": 38.982,
+          "end": 39.122,
+          "id": "s10-w9"
+        },
+        {
+          "text": "willingness",
+          "display": "willingness",
+          "prefix": "",
+          "suffix": "",
+          "start": 39.122,
+          "end": 39.382,
+          "id": "s10-w10"
+        },
+        {
+          "text": "to",
+          "display": "to",
+          "prefix": "",
+          "suffix": "",
+          "start": 39.382,
+          "end": 39.742,
+          "id": "s10-w11"
+        },
+        {
+          "text": "take",
+          "display": "take",
+          "prefix": "",
+          "suffix": "",
+          "start": 39.742,
+          "end": 39.962,
+          "id": "s10-w12"
+        },
+        {
+          "text": "it",
+          "display": "it",
+          "prefix": "",
+          "suffix": "",
+          "start": 39.962,
+          "end": 40.122,
+          "id": "s10-w13"
+        },
+        {
+          "text": "again",
+          "display": "again",
+          "prefix": "",
+          "suffix": "",
+          "start": 40.122,
+          "end": 40.402,
+          "id": "s10-w14"
+        },
+        {
+          "text": "tomorrow",
+          "display": "tomorrow.",
+          "prefix": "",
+          "suffix": ".",
+          "start": 40.402,
+          "end": 40.782,
+          "id": "s10-w15"
+        }
+      ]
+    }
+  ],
+  "focusPhrases": [
+    {
+      "text": "a big moment",
+      "translation": "一个重大时刻",
+      "sentence": 0
+    },
+    {
+      "text": "dramatic leap",
+      "translation": "戏剧性的飞跃",
+      "sentence": 1
+    },
+    {
+      "text": "day after day",
+      "translation": "日复一日",
+      "sentence": 2
+    },
+    {
+      "text": "before bed",
+      "translation": "睡前",
+      "sentence": 3
+    },
+    {
+      "text": "after lunch",
+      "translation": "午饭后",
+      "sentence": 4
+    },
+    {
+      "text": "expected to have",
+      "translation": "曾期待会拥有",
+      "sentence": 5
+    },
+    {
+      "text": "instead of",
+      "translation": "而不是；代替",
+      "sentence": 6
+    },
+    {
+      "text": "return to",
+      "translation": "回到；重新投入",
+      "sentence": 6
+    },
+    {
+      "text": "stay consistent",
+      "translation": "保持持续",
+      "sentence": 7
+    },
+    {
+      "text": "brand new",
+      "translation": "全新的",
+      "sentence": 8
+    },
+    {
+      "text": "the willingness to",
+      "translation": "愿意去……",
+      "sentence": 9
+    }
+  ]
+}

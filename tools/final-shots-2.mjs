@@ -1,0 +1,43 @@
+import { chromium } from "playwright-core";
+import fs from "node:fs";
+const browser = await chromium.launch({ executablePath: "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome", headless: true });
+fs.mkdirSync("screenshots", { recursive: true });
+const context = await browser.newContext({ viewport: { width: 1440, height: 1100 } });
+const page = await context.newPage();
+const errors = [];
+page.on("console", m => { if (m.type() === "error") errors.push(m.text()); });
+page.on("pageerror", e => errors.push(e.message));
+await page.goto("http://127.0.0.1:3010", { waitUntil: "networkidle" });
+await page.evaluate(() => localStorage.clear());
+await page.reload({ waitUntil: "networkidle" });
+await page.screenshot({ path: "screenshots/final2-home.png" });
+
+await page.locator(".lesson-actions .button-coral").click();
+await page.waitForTimeout(500);
+await page.getByRole("button", { name: /don’t know/i }).click();
+await page.waitForTimeout(1000);
+await page.screenshot({ path: "screenshots/final2-practice.png" });
+await page.locator(".practice-close").click();
+await page.waitForTimeout(300);
+
+await page.locator(".notebook-button").click();
+await page.waitForTimeout(300);
+await page.getByRole("button", { name: "Add", exact: true }).click();
+await page.waitForTimeout(200);
+await page.screenshot({ path: "screenshots/final2-notebook.png" });
+await page.locator(".notebook-drawer .icon-close").click();
+
+const mobile = await context.newPage();
+await mobile.setViewportSize({ width: 390, height: 844 });
+await mobile.goto("http://127.0.0.1:3010", { waitUntil: "networkidle" });
+await mobile.waitForTimeout(400);
+await mobile.screenshot({ path: "screenshots/final2-mobile.png" });
+await mobile.locator(".mobile-dock button:nth-child(2)").click();
+await mobile.waitForTimeout(300);
+await mobile.getByRole("button", { name: /don’t know/i }).click();
+await mobile.waitForTimeout(800);
+await mobile.locator(".line-vocab").scrollIntoViewIfNeeded();
+await mobile.waitForTimeout(200);
+await mobile.screenshot({ path: "screenshots/final2-mobile-vocab.png" });
+console.log("errors", errors);
+await browser.close();
